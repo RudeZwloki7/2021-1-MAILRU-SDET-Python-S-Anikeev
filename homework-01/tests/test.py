@@ -19,9 +19,9 @@ class TestOne(User):
 
     @pytest.mark.UI()
     def test_edit_profile(self, login):
-        self.user_edit_profile()
+        answer = self.user_edit_profile()
         assert 'Контактная информация' in self.driver.title
-        assert 'Информация успешно сохранена' in self.driver.page_source
+        assert 'Информация успешно сохранена' in answer
 
     @pytest.mark.UI()
     @pytest.mark.parametrize(
