@@ -22,4 +22,7 @@ class CampaignPage(BasePage):
         self.find(self.locators.UPLOAD_IMAGE_BUTTON).send_keys(logo_path)
         self.click(self.locators.SUBMIT_LOCATOR)
 
-        return campaign_name
+        created_campaign = (self.locators.CREATED_CAMPAIGN[0],
+                            self.locators.CREATED_CAMPAIGN[1].format(campaign_name))
+        return campaign_name == self.find(created_campaign).text
+

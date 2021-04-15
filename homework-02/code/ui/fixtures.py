@@ -93,3 +93,15 @@ def autologin(driver, main_page, logger, email='wqew.asdas@mail.ru', password='t
     logger.info(f'Logged in with email: {email} and password: {password}')
 
     return AccountPage(driver)
+
+
+@pytest.fixture(scope='function')
+def logo_path(repo_root):
+    return os.path.join(repo_root, 'ui', 'logo.png')
+
+
+@pytest.fixture(scope="class")
+def generate_name():
+    import random
+    import string
+    return ''.join(random.choices(string.ascii_letters + string.digits, k=7))

@@ -10,6 +10,8 @@ class MainPageLocators(BasePageLocators):
     EMAIL_LOCATOR = (By.NAME, 'email')
     PASSWORD_LOCATOR = (By.NAME, 'password')
     SUBMIT_LOCATOR = (By.XPATH, '//*[contains(text(), "Войти") and contains(@ class, "authForm-module-button")]')
+    ERROR_MSG_LOCATOR = (By.XPATH, '//div[contains(@class, "formMsg_text")]')
+    ERROR_NOTIFICATION = (By.XPATH, '//div[contains(@class, "notify-module-error")]')
 
 
 class AccountPageLocators(BasePageLocators):
@@ -23,7 +25,7 @@ class AccountPageLocators(BasePageLocators):
     SPINNER_LOCATOR = (By.XPATH, '//*[contains(@ class,"spinner-module-large")')
 
 
-class CampaignPageLocators(BasePageLocators):
+class CampaignPageLocators(AccountPageLocators):
     CAMPAIGN_TARGET_TEMPLATE = (By.XPATH, '//div[contains(@class, "column-list-item {}")]')
     INSERT_URL = (By.XPATH, '//input[@data-gtm-id="ad_url_text"]')
     CAMPAIGN_NAME = (By.XPATH, '//div[contains(@class, "base-settings__campaign-name-wrap")]//input')
@@ -33,7 +35,7 @@ class CampaignPageLocators(BasePageLocators):
     SUBMIT_LOCATOR = (By.XPATH, '//button[@data-class-name="Submit"]/div[contains(text(), "Создать кампанию")]')
 
 
-class SegmentPageLocators(BasePageLocators):
+class SegmentPageLocators(AccountPageLocators):
     CREATE_SEGMENT = (By.XPATH, '//a[@href ="/segments/segments_list/new/"]')
     COUNT_SEGMENTS = (By.XPATH, '//a[@href="/segments/segments_list"]/span[contains(@class, "item-count")]')
     SEGMENT_CHECKBOX = (By.XPATH, '//input[@type="checkbox" and contains(@class, "adding-segments-source")]')
