@@ -1,6 +1,5 @@
 import allure
-from selenium.common.exceptions import TimeoutException
-from ui.pages.base_page import BasePage, logger
+from ui.pages.base_page import BasePage
 from ui.locators.pages_locators import SegmentPageLocators
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -13,6 +12,7 @@ class SegmentPage(BasePage):
     def create_segment(self, name):
         self.wait(10).until(EC.element_to_be_clickable(self.locators.COUNT_SEGMENTS))
 
+        # Chose a right locator
         if self.find(self.locators.COUNT_SEGMENTS, 10).text == '0':
             create_locator = self.locators.CREATE_SEGMENT
         else:
@@ -30,16 +30,15 @@ class SegmentPage(BasePage):
 
     @allure.step('Deletion segment')
     def delete_segment(self, name):
+        # Create new segment
+        segment_name = self.create_segment(name)
+        assert name == segment_name
         segment_locator = (self.locators.SEGMENT_LIST_TEMPLATE[0], self.locators.SEGMENT_LIST_TEMPLATE[1].format(name))
+        segment = self.find(segment_locator)
 
-        try:
-            segment_exist = self.find(segment_locator)
-        except TimeoutException:
-            self.create_segment(name)
-            segment_exist = self.find(segment_locator)
-
-        row = segment_exist.find_element_by_xpath('../..')
-        row_id = row.get_attribute('data-row-id')
+        # Delete created segment
+        row = segment.find_element_by_xpath('../..')
+        row_id = row.get_attribute('data-row-id')  # Get id of created segment
         delete_locator = (self.locators.DELETE_SEGMENT_TEMPLATE[0],
                           self.locators.DELETE_SEGMENT_TEMPLATE[1].format(row_id))
         self.click(delete_locator)

@@ -100,7 +100,7 @@ def logo_path(repo_root):
     return os.path.join(repo_root, 'ui', 'logo.png')
 
 
-@pytest.fixture(scope="class")
+@pytest.fixture(scope="function")
 def generate_name():
     import random
     import string

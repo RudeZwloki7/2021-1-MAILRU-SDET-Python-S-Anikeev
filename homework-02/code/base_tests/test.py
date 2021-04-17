@@ -1,7 +1,6 @@
 import allure
 import pytest
 from base_tests.base import BaseCase
-from selenium.webdriver.support import expected_conditions as EC
 
 
 @pytest.mark.UI
@@ -42,13 +41,10 @@ class TestLogin(BaseCase):
         ]
     )
     def test_negative_login(self, email, password):
-        self.main_page.user_login(email, password)
-        if self.main_page.url != self.driver.current_url:
-            assert 'Invalid login or password' == self.main_page.find(self.main_page.locators.ERROR_MSG_LOCATOR).text
-        else:
-            self.main_page.wait().until(EC.visibility_of_element_located(self.main_page.locators.ERROR_NOTIFICATION))
-            notification = self.main_page.find(self.main_page.locators.ERROR_NOTIFICATION)
-            assert 'Введите email или телефон' == notification.text
+        err_msg = self.main_page.user_login(email, password)
+
+        assert 'Invalid login or password' if self.main_page.url != self.driver.current_url \
+            else 'Введите email или телефон' == err_msg
 
 
 @pytest.mark.UI
