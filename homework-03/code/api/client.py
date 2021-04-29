@@ -2,10 +2,10 @@ import logging
 from urllib.parse import urljoin
 
 import requests
-from requests.cookies import cookiejar_from_dict
 
 logger = logging.getLogger('test')
 MAX_RESPONSE_LENGTH = 500
+MAX_CAMPAIGNS_SHOW = 200
 
 
 class ResponseErrorException(Exception):
@@ -72,7 +72,8 @@ class ApiClient:
             "Accept-Encoding": "gzip, deflate, br",
             "Connection": "keep-alive",
             "Content-Type": "application/json",
-            "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36",
+            "User-Agent":
+                "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36",
         }
 
     def post_login(self, user, password):
@@ -83,9 +84,9 @@ class ApiClient:
 
         return csrftoken
 
-    def post_create_campaign(self, name):
-
+    def post_create_campaign(self, name, logo_path):
         location = '/api/v2/campaigns.json'
+
         headers = self.post_headers
         headers.update({
             'Referer': 'https://target.my.com/campaign/new',
@@ -94,8 +95,8 @@ class ApiClient:
 
         url_id = self._request('GET', '/api/v1/urls/', params={'url': 'mail.ru'})['id']
         logo_headers = headers
-        logo_headers.pop('Content-Type')
-        logo = {'file': ("logo.png", open("../ui/logo.png", 'rb'), 'image/png')}
+        logo_headers.pop('Content-Type')  # Correct Content-Type value will be set up automatically
+        logo = {'file': ("logo.png", open(logo_path, 'rb'), 'image/png')}
         pic_id = self._request('POST', '/api/v2/content/static.json', headers=logo_headers, files=logo)['id']
 
         campaign_json = {
@@ -120,7 +121,7 @@ class ApiClient:
             }]
         }
         campaign_id = self._request('POST', location, headers=headers, json=campaign_json)['id']
-        campaign_list = self._request('GET', location, params={'limit': 50})['items']
+        campaign_list = self._request('GET', location, params={'limit': MAX_CAMPAIGNS_SHOW})['items']
 
         assert campaign_id in [c['id'] for c in campaign_list]
 
@@ -129,11 +130,12 @@ class ApiClient:
                       json=deleted_status, expected_status=204, jsonify=False)
 
     def post_create_segment(self, name):
+        location = '/api/v2/remarketing/segments.json'
+
         headers = self.post_headers
         headers.update({
             "X-CSRFToken": self.session.cookies.get('csrftoken'),
         })
-        location = '/api/v2/remarketing/segments.json'
 
         json = {
             "name": name,

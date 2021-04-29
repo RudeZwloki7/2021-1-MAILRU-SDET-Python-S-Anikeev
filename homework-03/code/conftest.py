@@ -1,15 +1,13 @@
 import logging
 import shutil
 import sys
-
+import allure
 from api.client import ApiClient
 from ui.fixtures import *
 
 
 def pytest_addoption(parser):
     parser.addoption('--url', default='https://target.my.com')
-    parser.addoption('--selenoid', action='store_true')
-    parser.addoption('--vnc', action='store_true')
     parser.addoption('--browser', default='chrome')
     parser.addoption('--debug_log', action='store_true')
 
@@ -30,19 +28,9 @@ def api_client(config):
 @pytest.fixture(scope='session')
 def config(request):
     url = request.config.getoption('--url')
-    if request.config.getoption('--selenoid'):
-        selenoid = 'http://127.0.0.1:4444'
-        if request.config.getoption('--vnc'):
-            vnc = True
-        else:
-            vnc = False
-    else:
-        selenoid = None
-        vnc = False
-
     browser = request.config.getoption('--browser')
     debug_log = request.config.getoption('--debug_log')
-    return {'url': url, 'browser': browser, 'debug_log': debug_log, 'selenoid': selenoid, 'vnc': vnc}
+    return {'url': url, 'browser': browser, 'debug_log': debug_log}
 
 
 @pytest.fixture(scope='session')

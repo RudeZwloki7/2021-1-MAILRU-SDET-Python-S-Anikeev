@@ -14,8 +14,8 @@ class TestApiLogin(ApiBase):
 @pytest.mark.API
 class TestApiCampaign(ApiBase):
 
-    def test_create_campaign(self, generate_name):
-        self.api_client.post_create_campaign(generate_name)
+    def test_create_campaign(self, generate_name, logo_path):
+        self.api_client.post_create_campaign(generate_name, logo_path)
 
 
 @pytest.mark.API
