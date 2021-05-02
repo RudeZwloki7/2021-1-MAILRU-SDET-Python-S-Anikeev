@@ -6,6 +6,7 @@ import requests
 logger = logging.getLogger('test')
 MAX_RESPONSE_LENGTH = 500
 MAX_CAMPAIGNS_SHOW = 200
+MAX_SEGMENTS_SHOW = 200
 
 
 class ResponseErrorException(Exception):
@@ -130,42 +131,15 @@ class ApiClient:
                       json=deleted_status, expected_status=204, jsonify=False)
 
     def post_create_segment(self, name):
-        location = '/api/v2/remarketing/segments.json'
-
-        headers = self.post_headers
-        headers.update({
-            "X-CSRFToken": self.session.cookies.get('csrftoken'),
-        })
-
-        json = {
-            "name": name,
-            "pass_condition": 1,
-            "relations":
-                [{
-                    "object_type": "remarketing_player",
-                    "params": {
-                        "type": "positive",
-                        "left": 365,
-                        "right": 0
-                    }
-                }],
-            "logicType": "or"
-        }
-
-        segment = self._request('POST', location, headers=headers, json=json)
+        segment_id = self.create_segment(name)
         segments = self.get_segment_list()
 
-        assert segment['id'] in [s['id'] for s in segments['items']]
-        return segment['id']
+        assert segment_id in [s['id'] for s in segments['items']]
+        self.delete_segment_by_id(segment_id)
 
     def post_delete_segment(self, name):
-        segment_id = self.post_create_segment(name)
-        location = f'/api/v2/remarketing/segments/{segment_id}.json'
-
-        headers = self.post_headers
-        headers.update({'X-CSRFToken': self.session.cookies.get('csrftoken')})
-
-        self._request('DELETE', location, headers=headers, jsonify=False, expected_status=204)
+        segment_id = self.create_segment(name)
+        self.delete_segment_by_id(segment_id)
         segments = self.get_segment_list()['items']
 
         assert segment_id not in [s['id'] for s in segments]
@@ -197,4 +171,38 @@ class ApiClient:
 
     def get_segment_list(self):
         location = '/api/v2/remarketing/segments.json'
-        return self._request('GET', location)
+        return self._request('GET', location, params={'limit': MAX_SEGMENTS_SHOW})
+
+    def delete_segment_by_id(self, segment_id):
+        location = f'/api/v2/remarketing/segments/{segment_id}.json'
+
+        headers = self.post_headers
+        headers.update({'X-CSRFToken': self.session.cookies.get('csrftoken')})
+
+        self._request('DELETE', location, headers=headers, jsonify=False, expected_status=204)
+
+    def create_segment(self, name):
+        location = '/api/v2/remarketing/segments.json'
+
+        headers = self.post_headers
+        headers.update({
+            "X-CSRFToken": self.session.cookies.get('csrftoken'),
+        })
+
+        json = {
+            "name": name,
+            "pass_condition": 1,
+            "relations":
+                [{
+                    "object_type": "remarketing_player",
+                    "params": {
+                        "type": "positive",
+                        "left": 365,
+                        "right": 0
+                    }
+                }],
+            "logicType": "or"
+        }
+
+        segment_id = self._request('POST', location, headers=headers, json=json)['id']
+        return segment_id

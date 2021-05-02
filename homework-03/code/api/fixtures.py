@@ -4,7 +4,7 @@ import pytest
 
 @pytest.fixture(scope='function')
 def logo_path(repo_root):
-    return os.path.join(repo_root, 'ui', 'logo.png')
+    return os.path.join(repo_root, 'api', 'logo.png')
 
 
 @pytest.fixture(scope="function")

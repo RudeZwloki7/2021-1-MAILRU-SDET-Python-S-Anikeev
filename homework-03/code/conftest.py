@@ -3,7 +3,7 @@ import shutil
 import sys
 import allure
 from api.client import ApiClient
-from ui.fixtures import *
+from api.fixtures import *
 
 
 def pytest_addoption(parser):
