@@ -1,0 +1,2 @@
+#!/bin/bash
+cat ../access.log | grep -E "[A-Z]{3,} .+(HTTP)" |wc -l
