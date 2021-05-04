@@ -1,8 +1,8 @@
 import pytest
 from _pytest.fixtures import FixtureRequest
 
-from ui.pages.base_page import BasePage
-from ui.pages.main_page import MainPage
+from ui.pages.base_page import BasePageANDROID
+from ui.pages.main_page import MainPageANDROID
 
 
 class BaseCase:
@@ -13,7 +13,7 @@ class BaseCase:
         self.config = config
         self.logger = logger
 
-        self.base_page: BasePage = request.getfixturevalue('base_page')
-        self.main_page: MainPage = request.getfixturevalue('main_page')
+        self.base_page: BasePageANDROID = request.getfixturevalue('base_page')
+        self.main_page: MainPageANDROID = request.getfixturevalue('main_page')
 
         self.logger.debug('Initial setup done!')

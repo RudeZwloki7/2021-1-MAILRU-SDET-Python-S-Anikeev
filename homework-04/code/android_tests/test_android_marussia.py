@@ -1,7 +1,5 @@
-import time
-import allure
 import pytest
-from marussia_tests.base import BaseCase
+from android_tests.base import BaseCase
 
 
 class TestMarussiaAndroid(BaseCase):
@@ -18,4 +16,8 @@ class TestMarussiaAndroid(BaseCase):
 
     @pytest.mark.AndroidUI
     def test_news_source(self):
-        self.main_page.select_news_fm_source()
+        settings_page = self.main_page.go_to_settings_page()
+        news_source_page = settings_page.go_to_news_source_page()
+        news_source_page.choose_news_source()
+        news_source_page.return_to_main_page()
+        self.main_page.check_news_source_info()

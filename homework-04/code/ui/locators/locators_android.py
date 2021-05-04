@@ -1,4 +1,3 @@
-from selenium.webdriver.common.by import By
 from appium.webdriver.common.mobileby import MobileBy
 
 
@@ -15,13 +14,13 @@ class MainPageANDROIDLocators(BasePageANDROIDLocators):
     CARD_TITLE = (MobileBy.ID, 'ru.mail.search.electroscope:id/item_dialog_fact_card_title')
     RESPONSE = (MobileBy.XPATH, '//android.widget.TextView[@index="2"]')
     MENU_BTN = (MobileBy.ID, 'ru.mail.search.electroscope:id/assistant_menu_bottom')
+    NEWS_PLAYER_TITLE = (MobileBy.ID, 'ru.mail.search.electroscope:id/player_track_name')
 
 
-# class SettingsPageANDROIDLocators(BasePageANDROIDLocators):
+class SettingsPageANDROIDLocators(BasePageANDROIDLocators):
     NEWS_SOURCE = (MobileBy.ID, 'ru.mail.search.electroscope:id/user_settings_field_news_sources')
 
 
-# class NewsSourcePageANDROIDLocators(BasePageANDROIDLocators):
+class NewsSourcePageANDROIDLocators(BasePageANDROIDLocators):
     NEWS_FM = (MobileBy.XPATH, ' //android.widget.TextView[@text = "Вести FM"]')
     NEWS_CHECK = (MobileBy.ID, 'ru.mail.search.electroscope:id/news_sources_item_selected')
-    NEWS_PLAYER_TITLE = (MobileBy.ID, 'ru.mail.search.electroscope:id/player_track_name')
