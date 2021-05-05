@@ -4,3 +4,4 @@ selenium
 allure-pytest
 webdriver-manager
 requests
+Appium-Python-Client
