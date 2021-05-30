@@ -14,15 +14,15 @@ class TestGetRequest(TestBase):
         SURNAME_DATA[user.name] = user.surname
         resp = client.get_user_surname(user.name)
 
-        assert resp['body'] == user.surname
         assert resp['status_code'] == '200'
+        assert resp['body'] == user.surname
 
     def test_get_inexistent_user_surname(self):
         user = self.builder.create_user()
         resp = client.get_user_surname(user.name)
 
-        assert resp['body'] == f'Surname for user {user.name} not found'
         assert resp['status_code'] == '404'
+        assert resp['body'] == f'Surname for user {user.name} not found'
 
 
 class TestPutRequest(TestBase):
@@ -59,4 +59,3 @@ class TestDeleteRequest(TestBase):
 
         assert resp['status_code'] == '404'
         assert resp['body'] == f'Surname for user {user.name} not found'
-
