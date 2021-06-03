@@ -1,9 +1,11 @@
-pytest
-pytest-xdist
+pytest==6.2.1
+pytest-xdist==2.2.1
 selenium
 allure-pytest
 webdriver-manager
-requests
+requests==2.25.1
 Appium-Python-Client
 pymysql
 sqlalchemy
+Flask==1.1.2
+Faker==8.0.0
