@@ -1,0 +1,40 @@
+version: '2.1'
+
+services:
+  mysql:
+    build: mysql/
+    container_name: mysql_db
+    environment:
+      MYSQL_ROOT_PASSWORD: pass
+    healthcheck:
+      test: ['CMD', 'mysqladmin', '-uroot', '-ppass', 'ping', '-h', 'mysql']
+      timeout: 1s
+      retries: 30
+
+  vkapi:
+    build: ./mock
+    ports:
+      - "8088:8088"
+    container_name: vk_api
+
+
+  myapp:
+    image: "myapp:latest"
+    volumes:
+      - ./cfg:/tmp/cfg
+    entrypoint: "/app/myapp --config=/tmp/cfg"
+    ports:
+      - "8080:8080"
+    links:
+      - mysql
+      - vkapi
+    environment:
+      - PATH_TO_CONFIG=${PATH_TO_CONFIG}
+      - DOCKER_PATH_TO_CONFIG=${DOCKER_PATH_TO_CONFIG}
+      - APP_PORT=8080
+      - MYSQL_CONTAINER_NAME=${MYSQL_CONTAINER_NAME}
+      - VK_API_CONTAINER_NAME=${VK_API_CONTAINER_NAME}
+      - VK_API_HOSTNAME=${VK_API_HOSTNAME}
+    depends_on:
+      mysql:
+        condition: service_healthy
