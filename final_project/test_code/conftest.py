@@ -48,8 +48,9 @@ def stop_mock():
 
 
 def pytest_addoption(parser):
-    parser.addoption('--url', default='http://0.0.0.0:8080')
+    parser.addoption('--url', default='http://myapp:8090')
     parser.addoption('--browser', default='chrome')
+    parser.addoption('--selenoid', action='store_true')
     parser.addoption('--debug_log', action='store_true')
 
 
@@ -57,8 +58,15 @@ def pytest_addoption(parser):
 def config(request):
     url = request.config.getoption('--url')
     browser = request.config.getoption('--browser')
+    if request.config.getoption('--selenoid'):
+        # TODO: setup env variables in docker-compose
+        # selenoid = f'http://{os.environ.get(SELENOID_HOST,"127.0.0.1")}:{os.environ.get(SELENOID_PORT,"4444")}'
+        selenoid = f'http://127.0.0.1:4444'
+    else:
+        selenoid = None
     debug_log = request.config.getoption('--debug_log')
-    return {'url': url, 'browser': browser, 'debug_log': debug_log}
+    # return {'url': url, 'browser': browser, 'debug_log': debug_log}
+    return {'url': url, 'browser': browser, 'selenoid': selenoid, 'debug_log': debug_log}
 
 
 def pytest_configure(config):

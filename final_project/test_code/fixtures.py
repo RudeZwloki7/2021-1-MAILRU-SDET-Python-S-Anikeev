@@ -25,13 +25,28 @@ def login_page(driver):
     return LoginPage(driver=driver)
 
 
-def get_driver(browser_name, download_dir):
+def get_driver(config, download_dir):
+    browser_name = config['browser']
     if browser_name == 'chrome':
         options = ChromeOptions()
-        options.add_experimental_option("prefs", {"download.default_directory": download_dir})
+        if selenoid := config['selenoid']:
+            options.add_experimental_option("prefs", {"download.default_directory": '/home/selenoid/Downloads'})
+            options.add_experimental_option("prefs", {"profile.default_content_settings.popups": 0})
+            options.add_experimental_option("prefs", {"download.prompt_for_download": False})
+            caps = {'browserName': browser_name,
+                    'version': '89.0',
+                    'sessionTimeout': '2m',
+                    # 'applicationContainers': ["myapp:myapp"]}
+                    'additionalNetworks': ["tests_network"]}
+            caps['version'] += '_vnc'
+            caps['enableVNC'] = True
 
-        manager = ChromeDriverManager(version='latest')
-        browser = webdriver.Chrome(executable_path=manager.install(), options=options)
+            browser = webdriver.Remote(selenoid + '/wd/hub', options=options, desired_capabilities=caps)
+        else:
+            options.add_experimental_option("prefs", {"download.default_directory": download_dir})
+            manager = ChromeDriverManager(version='latest')
+            browser = webdriver.Chrome(executable_path=manager.install(), options=options)
+
     elif browser_name == 'firefox':
         manager = GeckoDriverManager(version='latest', log_level=0)  # set log_level=0 to disable logging
         browser = webdriver.Firefox(executable_path=manager.install())
@@ -44,9 +59,7 @@ def get_driver(browser_name, download_dir):
 @pytest.fixture(scope='function')
 def driver(config, test_dir):
     url = config['url']
-    browser_name = config['browser']
-
-    browser = get_driver(browser_name, download_dir=test_dir)
+    browser = get_driver(config, download_dir=test_dir)
 
     browser.get(url)
     browser.maximize_window()

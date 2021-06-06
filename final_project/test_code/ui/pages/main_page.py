@@ -3,7 +3,7 @@ from ui.pages.base_page import BasePage
 
 
 class MainPage(BasePage):
-    url = 'http://0.0.0.0:8080/welcome/'
+    url = 'http://myapp:8090/welcome/'
     locators = MainPageLocators()
 
     def go_python_page(self):

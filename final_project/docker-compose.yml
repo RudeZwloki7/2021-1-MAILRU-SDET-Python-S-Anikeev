@@ -23,18 +23,49 @@ services:
     volumes:
       - ./cfg:/tmp/cfg
     entrypoint: "/app/myapp --config=/tmp/cfg"
+    container_name: myapp
     ports:
-      - "8080:8080"
+      - "8090:8090"
     links:
       - mysql
       - vkapi
     environment:
       - PATH_TO_CONFIG=${PATH_TO_CONFIG}
       - DOCKER_PATH_TO_CONFIG=${DOCKER_PATH_TO_CONFIG}
-      - APP_PORT=8080
+      - APP_PORT=8090
       - MYSQL_CONTAINER_NAME=${MYSQL_CONTAINER_NAME}
       - VK_API_CONTAINER_NAME=${VK_API_CONTAINER_NAME}
       - VK_API_HOSTNAME=${VK_API_HOSTNAME}
     depends_on:
       mysql:
         condition: service_healthy
+
+  selenoid:
+    image: "aerokube/selenoid:latest"
+    network_mode: bridge
+    ports:
+      - "4444:4444"
+    volumes:
+      - "$PWD/test_code:/etc/selenoid" # assumed current dir contains browsers.json
+      - "/var/run/docker.sock:/var/run/docker.sock"
+#    entrypoint: pytest -v /test_code/ui/tests/tests.py --selenoid
+
+    depends_on:
+      myapp:
+        condition: service_started
+  selenoid-ui:
+    image: "aerokube/selenoid-ui:latest"
+    network_mode: bridge
+    links:
+      - selenoid
+    depends_on:
+      selenoid:
+        condition: service_started
+    ports:
+      - "8080:8080"
+    command: [ "--selenoid-uri", "http://selenoid:4444" ]
+
+networks:
+  default:
+    external: true
+    name: tests_network

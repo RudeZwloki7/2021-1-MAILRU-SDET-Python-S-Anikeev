@@ -3,7 +3,7 @@ from ui.pages.base_page import BasePage
 
 
 class RegisterPage(BasePage):
-    url = 'http://0.0.0.0:8080/reg'
+    url = 'http://myapp:8090/reg'
     locators = RegisterPageLocators()
 
     def register_user(self, username, email, password, confirm_password):
