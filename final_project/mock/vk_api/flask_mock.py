@@ -24,8 +24,8 @@ def create_user_surname():
 
 
 if __name__ == '__main__':
-    host = os.environ.get('0.0.0.0')
-    port = os.environ.get('MOCK_PORT', '8088')
+    host = 'vkapi'
+    port = '8088'
 
     app.run(host, port)
 

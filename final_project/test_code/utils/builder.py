@@ -7,27 +7,40 @@ fake = faker.Faker()
 
 @dataclass
 class User:
-    name: str = None
-    surname: str = None
-    new_surname: str = None
-    user_id: int = None
+    username: str = None
+    email: str = None
+    password: str = None
+    password_repeat: str = None
+    vk_id: int = None
 
 
 class Builder:
 
     @staticmethod
-    def create_user(name=None, surname=None, new_surname=None, user_id=None):
+    def create_user(username=None, email=None, password=None, password_repeat=None):
+        sample_user = fake.simple_profile()
+        if username is None:
+            username = sample_user['username']
 
-        if name is None:
-            name = fake.first_name()
+        if email is None:
+            email = sample_user['mail']
 
-        if surname is None:
-            surname = fake.last_name()
+        if password is None:
+            password = fake.pystr()
 
-        if new_surname is None:
-            new_surname = fake.last_name()
+        if password_repeat is None:
+            password_repeat = password
 
-        if user_id is None:
-            user_id = fake.random_int()
+        return User(username, email, password, password_repeat)
 
-        return User(name, surname, new_surname, user_id)
+    @staticmethod
+    def random_letter():
+        return fake.random_letter()
+
+    @staticmethod
+    def random_digit():
+        return fake.random_letter()
+
+    @staticmethod
+    def random_spec_char():
+        return fake.random_letter()

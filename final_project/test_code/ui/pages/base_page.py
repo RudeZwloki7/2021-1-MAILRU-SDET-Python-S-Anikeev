@@ -13,7 +13,7 @@ logger = logging.getLogger('test')
 
 
 class BasePage:
-    url = 'http://0.0.0.0:8080'
+    url = 'http://myapp:8090'
     locators = BasePageLocators()
 
     def __init__(self, driver):
