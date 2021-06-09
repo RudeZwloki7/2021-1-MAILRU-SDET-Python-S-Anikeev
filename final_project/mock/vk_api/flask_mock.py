@@ -1,5 +1,4 @@
 import json
-import os
 
 from flask import Flask, jsonify, request
 
@@ -20,7 +19,7 @@ def get_user_surname(name):
 def create_user_surname():
     user_info = json.loads(request.data)
     USERS.update(user_info)
-    return jsonify({}), 202
+    return jsonify({}), 201
 
 
 if __name__ == '__main__':
@@ -28,6 +27,3 @@ if __name__ == '__main__':
     port = '8088'
 
     app.run(host, port)
-
-
-

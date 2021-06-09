@@ -30,16 +30,9 @@ def get_driver(config, download_dir):
     if browser_name == 'chrome':
         options = ChromeOptions()
         if selenoid := config['selenoid']:
-            options.add_experimental_option("prefs", {"download.default_directory": '/home/selenoid/Downloads'})
             options.add_experimental_option("prefs", {"profile.default_content_settings.popups": 0})
             options.add_experimental_option("prefs", {"download.prompt_for_download": False})
-            caps = {'browserName': browser_name,
-                    'version': '89.0',
-                    'sessionTimeout': '2m',
-                    # 'applicationContainers': ["myapp:myapp"]}
-                    'additionalNetworks': ["tests_network"]}
-            caps['version'] += '_vnc'
-            caps['enableVNC'] = True
+            caps = {'browserName': 'chrome', 'version': '89.0_vnc', 'sessionTimeout': '2m', 'enableVNC': True}
 
             browser = webdriver.Remote(selenoid + '/wd/hub', options=options, desired_capabilities=caps)
         else:
@@ -99,11 +92,10 @@ def ui_report(driver, request, test_dir):
 
 @pytest.fixture(scope="function")
 @allure.step("Log in")
-def autologin(driver, login_page, logger, email='test_user', password='12345'):
-    # main_page.click(main_page.locators.EMAIL_LOCATOR)
-    login_page.insert(email, login_page.locators.USERNAME_LOCATOR)
+def autologin(driver, login_page, logger, name='test_user', password='12345'):
+    login_page.insert(name, login_page.locators.USERNAME_LOCATOR)
     login_page.insert(password, login_page.locators.PASSWORD_LOCATOR)
     login_page.click(login_page.locators.SUBMIT_BTN_LOCATOR)
-    logger.info(f'Logged in with email: {email} and password: {password}')
+    logger.info(f'Logged in with username: {name} and password: {password}')
 
     return MainPage(driver)
