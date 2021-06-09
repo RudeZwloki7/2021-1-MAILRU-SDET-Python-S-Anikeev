@@ -1,5 +1,6 @@
 from ui.locators.pages_locators import RegisterPageLocators
 from ui.pages.base_page import BasePage
+from ui.pages.main_page import MainPage
 
 
 class RegisterPage(BasePage):
@@ -7,9 +8,12 @@ class RegisterPage(BasePage):
     locators = RegisterPageLocators()
 
     def register_user(self, username, email, password, confirm_password):
+        self.is_visible(self.locators.REG_CARD_LOCATOR)
         self.insert(username, self.locators.USERNAME_LOCATOR)
         self.insert(email, self.locators.EMAIL_LOCATOR)
         self.insert(password, self.locators.PASSWORD_LOCATOR)
         self.insert(confirm_password, self.locators.CONFIRM_PASSWORD_LOCATOR)
         self.click(self.locators.CHECKBOX_LOCATOR)
         self.click(self.locators.SUBMIT_BTN_LOCATOR)
+
+        return MainPage(self.driver)

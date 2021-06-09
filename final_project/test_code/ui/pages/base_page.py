@@ -1,5 +1,6 @@
 import logging
 
+import allure
 from selenium.common.exceptions import StaleElementReferenceException
 from selenium.webdriver import ActionChains
 from selenium.webdriver.support.wait import WebDriverWait
@@ -22,6 +23,9 @@ class BasePage:
     def find(self, locator, timeout=None):
         return self.wait(timeout).until(EC.presence_of_element_located(locator))
 
+    def is_visible(self, locator, timeout=None):
+        return self.wait(timeout).until(EC.visibility_of_element_located(locator))
+
     def wait(self, timeout=None):
         if timeout is None:
             timeout = 5
@@ -40,7 +44,7 @@ class BasePage:
         field.send_keys(query)
         logger.info(f'Inserted "{query}" in {locator}')
 
-    # @allure.step('Clicking {locator}')
+    @allure.step('Clicking {locator}')
     def click(self, locator, timeout=None):
         for i in range(CLICK_RETRY):
             logger.info(f'Clicking on {locator}. Try {i + 1} of {CLICK_RETRY}...')
