@@ -1,4 +1,6 @@
 import logging
+
+import allure
 import sqlalchemy
 
 from sqlalchemy.orm import sessionmaker
@@ -36,12 +38,14 @@ class MysqlClient:
                                     autocommit=True,  # use autocommit on session.add
                                     expire_on_commit=True  # expire model after commit (requests data from database)
                                     )()
+        logger.debug('MySQL Client connected')
 
     def execute_query(self, query, fetch=True):
         res = self.connection.execute(query)
         if fetch:
             return res.fetchall()
 
+    @allure.step('Add user in database')
     def add_user(self, user: User, access=1, active=0, with_vk_id=True):
         user_db = UserDB(username=user.username, password=user.password, email=user.email, access=access, active=active)
         self.session.add(user_db)
@@ -51,6 +55,7 @@ class MysqlClient:
             client.create_vk_id(user.username, user.vk_id)
         return user_db
 
+    @allure.step('Find user in database')
     def find_user(self, username=None, email=None):
         if username:
             user = self.session.query(UserDB).filter(UserDB.username == username).first()
@@ -64,8 +69,11 @@ class MysqlClient:
 
         return user
 
+    @allure.step('Delete user from database')
     def delete_user(self, username=None, email=None):
         if username:
             self.session.query(UserDB).filter(UserDB.username == username).delete()
+            logger.debug(f'Delete user with username {username} from database')
         elif email:
             self.session.query(UserDB).filter(UserDB.email == email).delete()
+            logger.debug(f'Delete user with email {email} from database')

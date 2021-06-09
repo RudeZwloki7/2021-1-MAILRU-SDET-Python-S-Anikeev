@@ -1,9 +1,6 @@
-import logging
-
 import pytest
-
-from api.client.client import ApiClient
 from orm.client import MysqlClient
+from api.client.client import ApiClient
 from utils.builder import Builder
 
 

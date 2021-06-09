@@ -1,10 +1,10 @@
-import json
 import logging
 from urllib.parse import urljoin
 
+import allure
 import requests
 
-from utils.str_values import StatusCodes
+from api.str_values import StatusCodes
 
 logger = logging.getLogger('test')
 MAX_RESPONSE_LENGTH = 500
@@ -29,6 +29,7 @@ class ApiClient:
 
     status = StatusCodes()
 
+    @allure.step('Send request on {location}')
     def _request(self, method, location, headers=None, data=None, json=None, params=None, files=None,
                  expected_status=status.SUCCESS, jsonify=True):
 
@@ -59,6 +60,7 @@ class ApiClient:
             "Content-Type": "application/json",
         }
 
+    @allure.step('Send auth request')
     def post_login(self, username, password):
         location = '/login'
         headers = self.post_headers
@@ -71,6 +73,7 @@ class ApiClient:
 
         self._request('POST', location, headers, data, jsonify=False)
 
+    @allure.step('Add new user')
     def post_add_user(self, username, password, email, exp_status=status.CREATED):
         location = '/api/add_user'
         headers = self.post_headers
@@ -82,24 +85,28 @@ class ApiClient:
 
         self._request('POST', location, headers, json=data, expected_status=exp_status, jsonify=False)
 
+    @allure.step('Delete user')
     def get_delete_user(self, username, exp_status=status.DELETED):
         location = f'/api/del_user/{username}'
         headers = self.post_headers
 
         self._request('GET', location, headers, expected_status=exp_status, jsonify=False)
 
+    @allure.step('Block user')
     def get_block_user(self, username, exp_status=status.SUCCESS):
         location = f'/api/block_user/{username}'
         headers = self.post_headers
 
         self._request('GET', location, headers, expected_status=exp_status, jsonify=False)
 
+    @allure.step('Unblock user')
     def get_unblock_user(self, username, exp_status=status.SUCCESS):
         location = f'/api/accept_user/{username}'
         headers = self.post_headers
 
         self._request('GET', location, headers, expected_status=exp_status, jsonify=False)
 
+    @allure.step('Get app status')
     def get_status(self):
         location = f'/status'
         headers = self.post_headers

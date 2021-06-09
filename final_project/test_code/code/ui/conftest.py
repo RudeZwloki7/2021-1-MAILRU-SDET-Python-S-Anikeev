@@ -1,14 +1,7 @@
 import logging
 import shutil
-import signal
-import subprocess
-from copy import copy
-import requests
-
-from api.client.client import ApiClient
 from orm.client import MysqlClient
-from utils.decorators import wait_server_up
-from fixtures import *
+from ui.fixtures import *
 
 repo_root = os.path.abspath(os.path.join(__file__, os.pardir))  # final project path
 
@@ -24,10 +17,10 @@ def pytest_addoption(parser):
 def config(request):
     url = request.config.getoption('--url')
     browser = request.config.getoption('--browser')
-    if request.config.getoption('--selenoid'):
-        selenoid = f'http://selenoid:4444'
-    else:
-        selenoid = None
+    # if request.config.getoption('--selenoid'):
+    selenoid = f'http://selenoid:4444'
+    # else:
+    #     selenoid = None
     debug_log = request.config.getoption('--debug_log')
     return {'url': url, 'browser': browser, 'selenoid': selenoid, 'debug_log': debug_log}
 
@@ -65,17 +58,12 @@ def mysql_client():
     mysql_client.connection.close()
 
 
-@pytest.fixture(scope='function')
-def api_client(config):
-    return ApiClient(config['url'])
-
-
 @pytest.fixture(scope='function', autouse=True)
-def logger(test_dir):
+def logger(test_dir, config):
     log_formatter = logging.Formatter('%(asctime)s - %(filename)-15s - %(levelname)-6s - %(message)s')
     log_file = os.path.join(test_dir, 'test.log')
 
-    log_level = logging.INFO
+    log_level = logging.DEBUG if config['debug_log'] else logging.INFO
 
     file_handler = logging.FileHandler(log_file, 'w')
     file_handler.setFormatter(log_formatter)
@@ -91,3 +79,6 @@ def logger(test_dir):
 
     for handler in log.handlers:
         handler.close()
+
+    with open(log_file, 'r') as f:
+        allure.attach(f.read(), 'test.log', attachment_type=allure.attachment_type.TEXT)
