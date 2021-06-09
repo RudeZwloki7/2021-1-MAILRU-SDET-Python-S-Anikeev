@@ -14,7 +14,7 @@ class ApiBase:
         self.mysql_client: MysqlClient = mysql_client
         self.api_client: ApiClient = api_client
         if self.authorize:
-            user = self.builder.create_user(username='test_user', email='mail@email.com', password='12345')
+            user = self.builder.create_user(username='test_user_api', email='apimail@email.com', password='12345')
             if self.mysql_client.find_user(user.username) is None:
                 self.logger.debug("test_user doesn't exist")
                 self.mysql_client.add_user(user)
