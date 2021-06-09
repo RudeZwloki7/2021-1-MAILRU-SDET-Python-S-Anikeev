@@ -1,10 +1,10 @@
-import json
+import logging
 from dataclasses import dataclass
-
+import allure
 import faker
-import requests
 
 fake = faker.Faker()
+logger = logging.getLogger('test')
 
 
 @dataclass
@@ -19,6 +19,7 @@ class User:
 class Builder:
 
     @staticmethod
+    @allure.step('Create new User')
     def create_user(username=None, email=None, password=None, password_repeat=None, vk_id=None):
         sample_user = fake.simple_profile()
         if username is None:
@@ -36,7 +37,9 @@ class Builder:
         if vk_id is None:
             vk_id = fake.bothify(text='????##')
 
-        return User(username, email, password, password_repeat, vk_id)
+        user = User(username, email, password, password_repeat, vk_id)
+        logger.debug(f'Create new user {user}')
+        return user
 
     @staticmethod
     def random_letter():

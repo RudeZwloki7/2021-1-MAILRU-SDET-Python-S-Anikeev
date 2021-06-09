@@ -5,7 +5,6 @@ from selenium import webdriver
 from selenium.webdriver import ChromeOptions
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.firefox import GeckoDriverManager
-
 from ui.pages.base_page import BasePage
 from ui.pages.login_page import LoginPage
 from ui.pages.main_page import MainPage

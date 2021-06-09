@@ -15,7 +15,7 @@ class BaseCase:
         pass
 
     @pytest.fixture(scope='function', autouse=True)
-    def setup(self, driver, config, request: FixtureRequest, logger, mysql_client, api_client):
+    def setup(self, driver, config, request: FixtureRequest, logger, mysql_client):
         self.driver = driver
         self.config = config
         self.logger = logger
@@ -34,15 +34,7 @@ class BaseCase:
 
             assert self.mysql_client.find_user(user.username)
             self.main_page: MainPage = request.getfixturevalue('autologin')
-            self.logger.debug('Set up authorized user page')
+            self.logger.info('Set up authorized user page')
 
         self.prepare()
-        self.logger.debug('Initial setup done!')
-
-    # @staticmethod
-    # def get_zen():
-    #     import contextlib, io
-    #     zen = io.StringIO()
-    #     with contextlib.redirect_stdout(zen):
-    #         import this
-    #     return zen.getvalue()
+        self.logger.info('Initial setup done!')

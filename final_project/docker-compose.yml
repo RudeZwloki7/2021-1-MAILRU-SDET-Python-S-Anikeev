@@ -67,7 +67,6 @@ services:
     command: [ "--selenoid-uri", "http://selenoid:4444" ]
 
   tests:
-#    image: python
     build: ./test_code
     stop_signal: SIGKILL
     stdin_open: true
@@ -77,11 +76,11 @@ services:
       - $PWD/test_code:$PWD/test_code
       - /var/run/docker.sock:/var/run/docker.sock
       - /tmp:/tmp
-#    command: pytest -v ./ui/tests/tests.py --selenoid
     entrypoint: /bin/bash $PWD/test_code/start_tests.sh
     environment:
-      - TESTS_PATH=$PWD/test_code/api/tests/tests.py
-      - THREADS=1
+      - TESTS_PATH=code/ui/tests/tests.py
+      - THREADS=3
+      - ALLUREDIR=/tmp/allure-ui
     links:
       - selenoid
     depends_on:

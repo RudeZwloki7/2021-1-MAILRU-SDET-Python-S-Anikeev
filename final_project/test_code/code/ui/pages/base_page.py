@@ -19,11 +19,14 @@ class BasePage:
 
     def __init__(self, driver):
         self.driver = driver
+        logger.debug('Init page')
 
     def find(self, locator, timeout=None):
+        logger.debug(f'Try to find {locator} in DOM')
         return self.wait(timeout).until(EC.presence_of_element_located(locator))
 
     def is_visible(self, locator, timeout=None):
+        logger.debug(f'Try to find {locator} on screen')
         return self.wait(timeout).until(EC.visibility_of_element_located(locator))
 
     def wait(self, timeout=None):
